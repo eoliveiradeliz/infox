@@ -7,6 +7,7 @@ package br.com.infox.telas;
 
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 /**
@@ -32,11 +33,12 @@ public class TelaLogin extends javax.swing.JFrame {
             if (rs.next()) {
                 TelaPrincipal principal = new TelaPrincipal();
                 principal.setVisible(true);
-
+                this.dispose();//fecha a janela de login - TelaLogin.java
+                conexao.close();//fecha conexão com o banco
             } else {
                 JOptionPane.showMessageDialog(null, "usuário e/ou senha inválidos");
             }
-        } catch (Exception e) {
+        } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
@@ -77,7 +79,6 @@ public class TelaLogin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("X System - Login");
-        setAlwaysOnTop(true);
         setAutoRequestFocus(false);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
@@ -162,22 +163,16 @@ public class TelaLogin extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaLogin().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new TelaLogin().setVisible(true);
         });
     }
 
