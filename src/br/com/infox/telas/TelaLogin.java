@@ -7,6 +7,7 @@ package br.com.infox.telas;
 
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
+import java.awt.Color;
 import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
@@ -31,10 +32,26 @@ public class TelaLogin extends javax.swing.JFrame {
             rs = pst.executeQuery();
             // se existir usuario e senha correspondente
             if (rs.next()) {
-                TelaPrincipal principal = new TelaPrincipal();
-                principal.setVisible(true);
-                this.dispose();//fecha a janela de login - TelaLogin.java
-                conexao.close();//fecha conexão com o banco
+                //a linha abaixo obtem o conteúdo do campo perfil a tabela tbusuarios
+                String perfil = rs.getString(6);
+                //String user = rs.getString(2);
+                // System.out.println(perfil);
+                //a estrutura abaixo faz o tramento do perfil do usuário
+                if (perfil.equals("admin")) {
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.MenRelSer.setEnabled(true);
+                    TelaPrincipal.MenCadUsu.setEnabled(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    TelaPrincipal.lblUsuario.setForeground(Color.red);
+                    this.dispose();
+                }else{
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    TelaPrincipal.lblUsuario.setForeground(Color.blue);
+                    this.dispose();
+                } 
             } else {
                 JOptionPane.showMessageDialog(null, "usuário e/ou senha inválidos");
             }
@@ -167,7 +184,7 @@ public class TelaLogin extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */
