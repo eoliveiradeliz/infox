@@ -6,16 +6,17 @@
 package br.com.infox.telas;
 
 /**
- *Aula 13
+ * Aula 13
+ *
  * @author eneias
  */
-
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
 import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
-        
+
 public class TelaUsuario extends javax.swing.JInternalFrame {
+
     //usando variável de conexão do DAL
     Connection conexao = null;
     //criando variáveis especiais para conexão com o banco
@@ -31,10 +32,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         initComponents();
         conexao = ModuloConexao.conector();
     }
+
     //método para consultar usuários
-    private void consultar(){
+    private void consultar() {
         String sql = "select * from tbusuarios where iduser=?";
-        
+
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuId.getText());
@@ -46,45 +48,62 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 txtUsuSenha.setText(rs.getString(5));
                 //linha abaixo faz referência ao combobox
                 cboUsuPerfil.setSelectedItem(rs.getString(6));
-                
+
             } else {
-                JOptionPane.showMessageDialog(null,"Usuário não cadastrado");
+                JOptionPane.showMessageDialog(null, "Usuário não cadastrado");
                 //as linhas abaixo limpam os campos
                 txtUsuNome.setText(null);
                 txtUsuFone.setText(null);
                 txtUsuLogin.setText(null);
                 txtUsuSenha.setText(null);
                 //linha abaixo faz referência ao combobox
-                cboUsuPerfil.setSelectedItem(null);
+                //cboUsuPerfil.setSelectedItem(null);
             }
- 
-            
+
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        
+
     }
+
     //método para adcionar usuários
-    private void adicionar(){
-        
+    private void adicionar() {
+
         String sql = "insert into tbusuarios(iduser,usuario,fone,login,senha,perfil) values(?,?,?,?,?,?)";
-        
+
         try {
             pst = conexao.prepareStatement(sql);
-            pst.setString(1,txtUsuId.getText());
-            pst.setString(2,txtUsuNome.getText());
-            pst.setString(3,txtUsuFone.getText());
-            pst.setString(4,txtUsuLogin.getText());
-            pst.setString(5,txtUsuSenha.getText());
-            pst.setString(6,cboUsuPerfil.getSelectedItem().toString());
-            //a linha abaixo atualiza a tabela usuários com os dados do formulário
-            int executeUpdate = pst.executeUpdate();
-            
+            pst.setString(1, txtUsuId.getText());
+            pst.setString(2, txtUsuNome.getText());
+            pst.setString(3, txtUsuFone.getText());
+            pst.setString(4, txtUsuLogin.getText());
+            pst.setString(5, txtUsuSenha.getText());
+            pst.setString(6, cboUsuPerfil.getSelectedItem().toString());
+            //validação dos campos obrigatórios
+            if ((txtUsuId.getText().isEmpty()) || (txtUsuNome.getText().isEmpty()) || (txtUsuLogin.getText().isEmpty()) || (txtUsuSenha.getText().isEmpty()) ){
+                JOptionPane.showMessageDialog(null, "preencha todos os campos obrigatório *");
+            } else {
+
+                //a linha abaixo atualiza a tabela usuários com os dados do formulário
+                //a linnha abaixo confirma a inserção de dados na tabela
+                int adicionado = pst.executeUpdate();
+                //a linha serve de apoio ao entendimento da lógica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Usuário adicionado com sucesso");
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                    //linha abaixo faz referência ao combobox
+                   // cboUsuPerfil.setSelectedItem(null);
+                }
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        
-        
+
     }
 
     /**
@@ -112,6 +131,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuRead = new javax.swing.JButton();
         btnUsuUpdate = new javax.swing.JButton();
         btnUsuDelete = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -123,19 +143,19 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         setVerifyInputWhenFocusTarget(false);
 
         jLabel1.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabel1.setText("id");
+        jLabel1.setText("* id");
 
         jLabel2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabel2.setText("Nome");
+        jLabel2.setText("* Nome");
 
         jLabel3.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         jLabel3.setText("Fone");
 
         jLabel4.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabel4.setText("Senha");
+        jLabel4.setText("* Senha");
 
         jLabel5.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabel5.setText("Perfil");
+        jLabel5.setText("* Perfil");
 
         txtUsuId.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         txtUsuId.addActionListener(new java.awt.event.ActionListener() {
@@ -161,7 +181,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         txtUsuLogin.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabel6.setText("Login");
+        jLabel6.setText("* Login");
 
         btnUsuCreate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/create.png"))); // NOI18N
         btnUsuCreate.setToolTipText("Adicionar");
@@ -193,6 +213,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuDelete.setPreferredSize(new java.awt.Dimension(70, 70));
 
+        jLabel7.setText("* Campos obrigatórios");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,7 +231,9 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtUsuId, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(552, Short.MAX_VALUE))
+                                .addGap(220, 220, 220)
+                                .addComponent(jLabel7)
+                                .addContainerGap(208, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(txtUsuNome)
@@ -239,7 +263,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                                 .addGap(72, 72, 72)
                                 .addComponent(btnUsuDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(cboUsuPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(119, Short.MAX_VALUE))))
+                        .addContainerGap(153, Short.MAX_VALUE))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnUsuCreate, btnUsuDelete, btnUsuRead, btnUsuUpdate});
@@ -247,10 +271,15 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtUsuId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtUsuId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel7)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -313,6 +342,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField txtUsuFone;
     private javax.swing.JTextField txtUsuId;
     private javax.swing.JTextField txtUsuLogin;
