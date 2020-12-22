@@ -105,6 +105,47 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         }
 
     }
+    //método para alterar usuários
+    private void alterar() {
+        String sql = "update tbusuarios set usuario=?,fone=?,login=?,senha=?,perfil=? where iduser=?";
+        
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuNome.getText());
+            pst.setString(2, txtUsuFone.getText());
+            pst.setString(3, txtUsuLogin.getText());
+            pst.setString(4, txtUsuSenha.getText());
+            pst.setString(5, cboUsuPerfil.getSelectedItem().toString()); 
+            pst.setString(6, txtUsuId.getText());
+            
+            if ((txtUsuId.getText().isEmpty()) || (txtUsuNome.getText().isEmpty()) || (txtUsuLogin.getText().isEmpty()) || (txtUsuSenha.getText().isEmpty()) ){
+                JOptionPane.showMessageDialog(null, "preencha todos os campos obrigatório *");
+            } else {
+
+                //a linha abaixo atualiza a tabela usuários com os dados do formulário
+                //a linnha abaixo confirma a alteração de dados na tabela
+                int adicionado = pst.executeUpdate();
+                //a linha serve de apoio ao entendimento da lógica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Dados do Usuário alterado com sucesso");
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                    //linha abaixo faz referência ao combobox
+                   // cboUsuPerfil.setSelectedItem(null);
+                }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            
+        }
+            
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -207,6 +248,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuUpdate.setToolTipText("Alterar");
         btnUsuUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuUpdate.setPreferredSize(new java.awt.Dimension(70, 70));
+        btnUsuUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuUpdateActionPerformed(evt);
+            }
+        });
 
         btnUsuDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/delete.png"))); // NOI18N
         btnUsuDelete.setToolTipText("Remover");
@@ -328,6 +374,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         // chamando o método adicionar
         adicionar();
     }//GEN-LAST:event_btnUsuCreateActionPerformed
+
+    private void btnUsuUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuUpdateActionPerformed
+        // chamando o método alterar
+        alterar();
+    }//GEN-LAST:event_btnUsuUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
